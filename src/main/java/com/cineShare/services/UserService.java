@@ -3,6 +3,7 @@ package com.cineShare.services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.cineShare.repository.UserRepository;
 import com.cineShare.model.*;
@@ -32,4 +33,21 @@ public class UserService {
 	    return userRepository.save(user);
 	}
 	
-}
+	public List<User> findByNameOrId(String conteudo){
+
+		    if (conteudo.matches("\\d+")) {
+
+		        Long id = Long.parseLong(conteudo);
+
+		        return userRepository.findById(id)
+		                .map(user -> List.of(user))
+		                .orElse(List.of());
+
+		    } else {
+
+		        return userRepository
+		                .findByNomeContainingIgnoreCase(conteudo);
+		    }
+		}
+	}
+

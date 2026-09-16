@@ -43,21 +43,18 @@ public class UserController {
 	public User salvar(@RequestBody User user) {
 		return userService.salvar(user);
 	}
-//	@GetMapping("/{nome}")
-//	public List<User> findByName(@PathVariable String nome) {
-//		
-//		
-//		return userRepository.findByNomeContainingIgnoreCase(nome);
-//	}
-//	
+
+	@GetMapping("/{buscar}")
+	public List<User> findByName(@PathVariable String buscar) {
+		
+		return userService.findByNameOrId(buscar);
+	}
+	
 //	@GetMapping("/{id}")
 //	public List<User> findById(@PathVariable String id) {
 //		
-//		Long id1 = Long.parseLong(id);
 //
-//		return userRepository.findById(id1)
-//                .map(user -> List.of(user))
-//                .orElse(List.of());
+//		return userService.findByNameOrId(id);
 //	}
 }
 
