@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineShare - Teste da API</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #f4f4f4;
+            color: #222;
+        }
+        h1 { margin-bottom: 5px; }
+        .subtitle { color: #666; margin-top: 0; }
+        section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        button {
+            margin-top: 15px;
+            cursor: pointer;
+            background: #222;
+            color: white;
+            border: none;
+        }
+        button:hover { background: #444; }
+        pre {
+            background: #111;
+            color: #eee;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .status { font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>CineShare API</h1>
+    <p class="subtitle">Página simples para testar as requisições do Spring Boot.</p>
+
+    <!-- GET -->
+    <section>
+        <h2>1. Listar clientes</h2>
+        <p>Executa: <strong>GET /clientes</strong></p>
+
+        <button onclick="listarClientes()">Buscar clientes</button>
+
+        <div class="status" id="statusGet"></div>
+        <pre id="resultadoGet">Nenhuma requisição realizada.</pre>
+    </section>
+
+    <!-- POST -->
+    <section>
+        <h2>2. Cadastrar cliente</h2>
+        <p>Executa: <strong>POST /clientes</strong></p>
+
+        <label for="nome">Nome</label>
+        <input id="nome" type="text" placeholder="Digite o nome">
+
+        <label for="email">E-mail</label>
+        <input id="email" type="email" placeholder="Digite o e-mail">
+
+        <button onclick="cadastrarCliente()">Salvar no banco</button>
+
+        <div class="status" id="statusPost"></div>
+        <pre id="resultadoPost">Nenhuma requisição realizada.</pre>
+    </section>
+
+    <!-- JSON manual -->
+	<section>
+
+	```
+	<h2>3. Buscar Clientes</h2>
+
+	<p>Faz uma busca no banco de dados e retorna os clientes que contêm o nome informado ou que possuem o ID informado.</p>
+
+	<label for="conteudo">Nome ou ID</label>
+
+	<input
+	    type="text"
+	    id="conteudo"
+	    placeholder="Digite o nome ou ID do cliente"
+	>
+
+	<button onclick="buscarCliente()">Buscar Cliente</button>
+
+	<div class="status" id="statusJson"></div>
+
+	<pre id="resultadoJson">Nenhuma requisição realizada.</pre>
+	```
+
+	</section>
+
+
+<script>
+    // Endereço da sua API Spring Boot
+    const API = "http://localhost:8080";
+
+    async function listarClientes() {
+        const status = document.getElementById("statusGet");
+        const resultado = document.getElementById("resultadoGet");
+
+        status.textContent = "Enviando requisição...";
+
+        try {
+            const resposta = await fetch(`${API}/clientes`);
+
+            const texto = await resposta.text();
+
+            status.textContent = `HTTP ${resposta.status}`;
+
+            try {
+                resultado.textContent =
+                    JSON.stringify(JSON.parse(texto), null, 4);
+            } catch {
+                resultado.textContent = texto;
+            }
+
+        } catch (erro) {
+            status.textContent = "Erro de conexão";
+            resultado.textContent =
+                "Não foi possível conectar ao Spring Boot.\n\n" +
+                erro.message;
+        }
+    }
+
+
+    async function cadastrarCliente() {
+        const nome = document.getElementById("nome").value;
+        const email = document.getElementById("email").value;
+
+        const status = document.getElementById("statusPost");
+        const resultado = document.getElementById("resultadoPost");
+
+        const cliente = {
+            nome: nome,
+            email: email
+        };
+
+        status.textContent = "Enviando...";
+        resultado.textContent = "";
+
+        try {
+            const resposta = await fetch(`${API}/clientes`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(cliente)
+            });
+
+            const texto = await resposta.text();
+
+            status.textContent = `HTTP ${resposta.status}`;
+
+            try {
+                resultado.textContent =
+                    JSON.stringify(JSON.parse(texto), null, 4);
+            } catch {
+                resultado.textContent = texto;
+            }
+
+        } catch (erro) {
+            status.textContent = "Erro de conexão";
+            resultado.textContent = erro.message;
+        }
+    }
+
+
+    async function enviarJson() {
+        const jsonTexto = document.getElementById("json").value;
+
+        const status = document.getElementById("statusJson");
+        const resultado = document.getElementById("resultadoJson");
+
+        try {
+            const objeto = JSON.parse(jsonTexto);
+
+            const resposta = await fetch(`${API}/clientes`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objeto)
+            });
+
+            const texto = await resposta.text();
+
+            status.textContent = `HTTP ${resposta.status}`;
+
+            try {
+                resultado.textContent =
+                    JSON.stringify(JSON.parse(texto), null, 4);
+            } catch {
+                resultado.textContent = texto;
+            }
+
+        } catch (erro) {
+            status.textContent = "Erro";
+            resultado.textContent =
+                erro instanceof SyntaxError
+                    ? "JSON inválido."
+                    : erro.message;
+        }
+    }
+</script>
+
+</body>
+</html>
