@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Cliente {
+public class User {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +17,9 @@ public class Cliente {
 	
 	@Column(nullable = false)
 	private String nome;
+	
+
+	private String email;
 
 
 
