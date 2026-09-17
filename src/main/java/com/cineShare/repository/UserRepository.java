@@ -15,11 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	
 	List<User> findByNomeContainingIgnoreCase(String nome);
 	
-//	@Override
-//	default Optional<User> findById(Long id) {
-//		// TODO Auto-generated method stub
-//		return Optional.empty();
-//	}
 	
 	boolean existsByEmail(String string);
 
