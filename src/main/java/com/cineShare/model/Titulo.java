@@ -15,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+@Data
 @Entity
 public class Titulo {
 
@@ -28,31 +29,5 @@ public class Titulo {
 
     private LocalDate anoLancamento;
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getPlataforma() {
-        return plataforma;
-    }
-
-    public void setPlataforma(String plataforma) {
-        this.plataforma = plataforma;
-    }
-
-    public LocalDate getAnoLancamento() {
-        return anoLancamento;
-    }
-
-    public void setAnoLancamento(LocalDate anoLancamento) {
-        this.anoLancamento = anoLancamento;
-    }
+   
 }
