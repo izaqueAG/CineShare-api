@@ -20,7 +20,7 @@ public class TituloService {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final String token = "SEU_TOKEN_AQUI";
+    private final String token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NjdjYzZjNGEwZjFmNjA0OTVmNGViNzNhYTQ5NjM2NiIsIm5iZiI6MTc4OTU5OTU0Ny4zNTM5OTk5LCJzdWIiOiI2YWFiMWYzYjBjODVkMjE2NzgwMTc4NzQiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.zy92NL7FZq040-6mx_FeSFUMoP7O50MAAIyMgsRiWaU";
 
     public Titulo getTitulo(String nomeTitulo) {
 

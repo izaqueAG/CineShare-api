@@ -17,7 +17,7 @@ public class TituloController {
     }
 
     @GetMapping("/titulos/buscar")
-    public Titulo buscarTitulo(
+    public Titulo getTitulo(
             @RequestParam String nome) {
 
         return tituloService.getTitulo(nome);
