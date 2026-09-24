@@ -7,11 +7,11 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import DTO.TmdbResposta;
 import DTO.TmdbResultado;
-import lombok.Value;
 import tools.jackson.databind.ObjectMapper;
 
 import com.cineShare.model.Titulo;
@@ -27,14 +27,13 @@ public class TituloService {
     public TituloService(TituloRepository tituloRepository) {
         this.tituloRepository = tituloRepository;
     }
+    @Value("${tmdb.token}")  
+    private String token;
 
     public Titulo salvar(Titulo titulo) {
         return tituloRepository.save(titulo);
     }
 
-    @Value("${tmdb.token}")
-    private String token;
-    
     public Titulo getTitulo(String nomeTitulo) {
 
         try {
@@ -42,6 +41,7 @@ public class TituloService {
                     nomeTitulo,
                     StandardCharsets.UTF_8
             );
+            
 
             String url = "https://api.themoviedb.org/3/search/movie"
                     + "?query=" + tituloCodificado
