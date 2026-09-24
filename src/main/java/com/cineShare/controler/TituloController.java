@@ -1,5 +1,7 @@
 package com.cineShare.controler;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,5 +23,10 @@ public class TituloController {
             @RequestParam String nome) {
 
         return tituloService.getTitulo(nome);
+    }
+    
+    @GetMapping("/titulos/mostrar")
+    public List<Titulo> showDbTitulo() {
+    	return tituloService.findAll();
     }
 }

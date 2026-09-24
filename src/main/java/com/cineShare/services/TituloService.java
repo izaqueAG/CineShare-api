@@ -6,6 +6,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class TituloService {
     public TituloService(TituloRepository tituloRepository) {
         this.tituloRepository = tituloRepository;
     }
+    
     @Value("${tmdb.token}")  
     private String token;
 
@@ -111,4 +113,10 @@ public class TituloService {
             );
         }
     }
+
+	
+    public List<Titulo> findAll() {
+		// TODO Auto-generated method stub
+		return tituloRepository.findAll();
+	}
 }
