@@ -10,5 +10,7 @@ import java.time.LocalDate;
 public interface TituloRepository extends JpaRepository<Titulo, Long> {
 	
 	List<Titulo> findByAnoLancamento(String nome);
+	
+	List<Titulo> findByNome(String nome);
 
 }

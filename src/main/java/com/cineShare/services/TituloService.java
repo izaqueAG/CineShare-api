@@ -7,6 +7,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -83,6 +84,13 @@ public class TituloService {
             }
 
             TmdbResultado resultado = resposta.getResults().get(0);
+//            verificar se titulo exist na tabela titulos, caso nao, cria um novo objeto
+            
+            List<Titulo> tituloExistente = tituloRepository.findByNome(resultado.getTitle());
+
+            if (!tituloExistente.isEmpty()) {
+                return tituloExistente.get(0);
+            }
 
             Titulo titulo = new Titulo();
 
@@ -98,7 +106,6 @@ public class TituloService {
 
             titulo.setPlataforma("Em desenvolvimento");
             
-//            verificar se tabela titulos existe, caso nao POST titulo
 
             
 //            persiste titulo em dbTitulo
