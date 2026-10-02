@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Filmes</title>
+</head>
+<body>
+
+    <h1>Lista de Filmes</h1>
+
+    <label for="filme">Digite o nome do filme:</label>
+
+    <input
+        type="text"
+        id="filme"
+        placeholder="Nome do filme"
+    >
+
+    <h2>Filmes selecionados</h2>
+
+    <ul id="listaFilmes"></ul>
+
+    <p id="contador">0 / 3 filmes</p>
+
+    <button id="btnEnviar">Enviar lista</button>
+
+
+    <script>
+
+        const campoFilme = document.getElementById("filme");
+        const listaFilmes = document.getElementById("listaFilmes");
+        const contador = document.getElementById("contador");
+        const btnEnviar = document.getElementById("btnEnviar");
+
+        const filmes = [];
+
+
+        // Quando o usuário pressionar Enter
+        campoFilme.addEventListener("keydown", async function(event) {
+
+            if (event.key !== "Enter") {
+                return;
+            }
+
+            event.preventDefault();
+
+            const nomeFilme = campoFilme.value.trim();
+
+            if (nomeFilme === "") {
+                return;
+            }
+
+            if (filmes.length >= 3) {
+                alert("A lista pode conter no máximo 3 filmes.");
+                return;
+            }
+
+            try {
+
+                // Consulta o seu backend
+                const resposta = await fetch(
+                    "http://localhost:8080/titulos/buscar?nome="
+                    + encodeURIComponent(nomeFilme)
+                );
+
+                if (!resposta.ok) {
+                    throw new Error("Filme não encontrado");
+                }
+
+                const filme = await resposta.json();
+
+                // Adiciona o filme ao array
+                filmes.push(filme);
+
+                // Mostra o filme na tela
+                adicionarFilmeNaTela(filme);
+
+                // Limpa o campo
+                campoFilme.value = "";
+
+                atualizarContador();
+
+            } catch (erro) {
+
+                alert(erro.message);
+
+            }
+
+        });
+
+
+        function adicionarFilmeNaTela(filme) {
+
+            const item = document.createElement("li");
+
+            item.textContent = filme.nome;
+
+            listaFilmes.appendChild(item);
+
+        }
+
+
+        function atualizarContador() {
+
+            contador.textContent = filmes.length + " / 3 filmes";
+
+        }
+
+
+        // Enviar lista para o backend
+        btnEnviar.addEventListener("click", async function() {
+
+            if (filmes.length === 0) {
+                alert("Adicione pelo menos um filme.");
+                return;
+            }
+
+            try {
+
+                const resposta = await fetch(
+                    "http://localhost:8080/listas",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(filmes)
+                    }
+                );
+
+                if (!resposta.ok) {
+                    throw new Error("Erro ao salvar a lista.");
+                }
+
+                alert("Lista salva com sucesso!");
+
+                filmes.length = 0;
+
+                listaFilmes.innerHTML = "";
+
+                atualizarContador();
+
+            } catch (erro) {
+
+                alert(erro.message);
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

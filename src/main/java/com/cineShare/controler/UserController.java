@@ -44,7 +44,7 @@ public class UserController {
 		return userService.salvar(user);
 	}
 
-	@GetMapping("/{buscar}")
+	@GetMapping("/users/{buscar}")
 	public List<User> findByName(@PathVariable String buscar) {
 		
 		return userService.findByNameOrId(buscar);
