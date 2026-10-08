@@ -1,156 +1,174 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Lista de Filmes</title>
 </head>
+
 <body>
 
-    <h1>Lista de Filmes</h1>
+```
+<h1>Lista de Filmes</h1>
 
-    <label for="filme">Digite o nome do filme:</label>
+<label for="nomeLista">Nome da lista:</label>
+<input
+    type="text"
+    id="nomeLista"
+    placeholder="Ex: Filmes para assistir"
+>
 
-    <input
-        type="text"
-        id="filme"
-        placeholder="Nome do filme"
-    >
+<br><br>
 
-    <h2>Filmes selecionados</h2>
+<label for="filme">Digite o nome do filme:</label>
+<input
+    type="text"
+    id="filme"
+    placeholder="Nome do filme"
+>
 
-    <ul id="listaFilmes"></ul>
+<h2>Filmes selecionados</h2>
 
-    <p id="contador">0 / 3 filmes</p>
+<ul id="listaFilmes"></ul>
 
-    <button id="btnEnviar">Enviar lista</button>
+<p id="contador">0 / 3 filmes</p>
 
+<button id="btnEnviar">Enviar lista</button>
 
-    <script>
+<script>
 
-        const campoFilme = document.getElementById("filme");
-        const listaFilmes = document.getElementById("listaFilmes");
-        const contador = document.getElementById("contador");
-        const btnEnviar = document.getElementById("btnEnviar");
+    const campoNomeLista = document.getElementById("nomeLista");
+    const campoFilme = document.getElementById("filme");
+    const listaFilmes = document.getElementById("listaFilmes");
+    const contador = document.getElementById("contador");
+    const btnEnviar = document.getElementById("btnEnviar");
 
-        const filmes = [];
+    const filmes = [];
 
+    // Quando o usuário pressionar Enter
+    campoFilme.addEventListener("keydown", async function(event) {
 
-        // Quando o usuário pressionar Enter
-        campoFilme.addEventListener("keydown", async function(event) {
-
-            if (event.key !== "Enter") {
-                return;
-            }
-
-            event.preventDefault();
-
-            const nomeFilme = campoFilme.value.trim();
-
-            if (nomeFilme === "") {
-                return;
-            }
-
-            if (filmes.length >= 3) {
-                alert("A lista pode conter no máximo 3 filmes.");
-                return;
-            }
-
-            try {
-
-                // Consulta o seu backend
-                const resposta = await fetch(
-                    "http://localhost:8080/titulos/buscar?nome="
-                    + encodeURIComponent(nomeFilme)
-                );
-
-                if (!resposta.ok) {
-                    throw new Error("Filme não encontrado");
-                }
-
-                const filme = await resposta.json();
-
-                // Adiciona o filme ao array
-                filmes.push(filme);
-
-                // Mostra o filme na tela
-                adicionarFilmeNaTela(filme);
-
-                // Limpa o campo
-                campoFilme.value = "";
-
-                atualizarContador();
-
-            } catch (erro) {
-
-                alert(erro.message);
-
-            }
-
-        });
-
-
-        function adicionarFilmeNaTela(filme) {
-
-            const item = document.createElement("li");
-
-            item.textContent = filme.nome;
-
-            listaFilmes.appendChild(item);
-
+        if (event.key !== "Enter") {
+            return;
         }
 
+        event.preventDefault();
 
-        function atualizarContador() {
+        const nomeFilme = campoFilme.value.trim();
 
-            contador.textContent = filmes.length + " / 3 filmes";
-
+        if (nomeFilme === "") {
+            return;
         }
 
+        if (filmes.length >= 3) {
+            alert("A lista pode conter no máximo 3 filmes.");
+            return;
+        }
 
-        // Enviar lista para o backend
-        btnEnviar.addEventListener("click", async function() {
+        try {
 
-            if (filmes.length === 0) {
-                alert("Adicione pelo menos um filme.");
-                return;
+            const resposta = await fetch(
+                "http://localhost:8080/titulos/buscar?nome="
+                + encodeURIComponent(nomeFilme)
+            );
+
+            if (!resposta.ok) {
+                throw new Error("Filme não encontrado");
             }
 
-            try {
+            const filme = await resposta.json();
 
-                const resposta = await fetch(
-                    "http://localhost:8080/listas",
-                    {
-                        method: "POST",
+            // Guarda apenas o nome do filme
+            filmes.push(filme.nome);
 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+            // Mostra o filme na tela
+            adicionarFilmeNaTela(filme);
 
-                        body: JSON.stringify(filmes)
-                    }
-                );
+            campoFilme.value = "";
 
-                if (!resposta.ok) {
-                    throw new Error("Erro ao salvar a lista.");
+            atualizarContador();
+
+        } catch (erro) {
+            alert(erro.message);
+        }
+    });
+
+
+    function adicionarFilmeNaTela(filme) {
+
+        const item = document.createElement("li");
+
+        item.textContent = filme.nome;
+
+        listaFilmes.appendChild(item);
+    }
+
+
+    function atualizarContador() {
+
+        contador.textContent = filmes.length + " / 3 filmes";
+    }
+
+
+    // Enviar lista para o backend
+    btnEnviar.addEventListener("click", async function() {
+
+        const nomeLista = campoNomeLista.value.trim();
+
+        if (nomeLista === "") {
+            alert("Digite um nome para a lista.");
+            return;
+        }
+
+        if (filmes.length === 0) {
+            alert("Adicione pelo menos um filme.");
+            return;
+        }
+
+        const lista = {
+            nome: nomeLista,
+            titulos: filmes
+        };
+
+        try {
+
+            const resposta = await fetch(
+                "http://localhost:8080/listas",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(lista)
                 }
+            );
 
-                alert("Lista salva com sucesso!");
-
-                filmes.length = 0;
-
-                listaFilmes.innerHTML = "";
-
-                atualizarContador();
-
-            } catch (erro) {
-
-                alert(erro.message);
-
+            if (!resposta.ok) {
+                throw new Error("Erro ao salvar a lista.");
             }
 
-        });
+            alert("Lista salva com sucesso!");
 
-    </script>
+            filmes.length = 0;
+
+            listaFilmes.innerHTML = "";
+
+            campoNomeLista.value = "";
+
+            atualizarContador();
+
+        } catch (erro) {
+
+            alert(erro.message);
+        }
+    });
+
+</script>
+```
 
 </body>
+
 </html>

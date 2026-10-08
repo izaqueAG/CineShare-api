@@ -18,6 +18,7 @@ public class ListaIndicacao {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	private String nome;
 	
 	@ManyToMany
 	@JoinTable(
