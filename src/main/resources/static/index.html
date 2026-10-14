@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -25,42 +26,47 @@
     </form>
 
     <script>
-        document.getElementById("formCadastro").addEventListener("submit", async function(event) {
+        document.getElementById("formCadastro")
+            .addEventListener("submit", async function(event) {
 
-            event.preventDefault();
+                event.preventDefault();
 
-            const nome = document.getElementById("nome").value;
-            const email = document.getElementById("email").value;
+                const nome = document.getElementById("nome").value;
+                const email = document.getElementById("email").value;
 
-            const usuario = {
-                nome: nome,
-                email: email
-            };
+                const usuario = {
+                    nome: nome,
+                    email: email
+                };
 
-            try {
+                try {
+                    const resposta = await fetch("http://localhost:8080/user", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(usuario)
+                    });
 
-                const resposta = await fetch("http://localhost:8080/user", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(usuario)
-                });
+                    if (!resposta.ok) {
+                        throw new Error("Erro ao cadastrar usuário");
+                    }
 
-                if (!resposta.ok) {
-                    throw new Error("Erro ao cadastrar usuário");
+                    const usuarioSalvo = await resposta.json();
+
+                    // Armazena o ID retornado pelo backend
+                    sessionStorage.setItem("userId", usuarioSalvo.id);
+
+                    alert("Usuário cadastrado!");
+
+                    window.location.href = "lista.html";
+
+                } catch (erro) {
+                    alert(erro.message);
                 }
-
-                alert("Usuário cadastrado!");
-
-                window.location.href = "lista.html";
-
-            } catch (erro) {
-                alert(erro.message);
-            }
-
-        });
+            });
     </script>
 
 </body>
 </html>
+```

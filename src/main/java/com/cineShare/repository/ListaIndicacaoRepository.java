@@ -24,6 +24,7 @@ public interface ListaIndicacaoRepository extends JpaRepository<ListaIndicacao, 
 	@Override
 	default Optional<ListaIndicacao> findById(Long id) {
 		// TODO Auto-generated method stub
+		
 		return Optional.empty();
 	}
 

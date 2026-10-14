@@ -20,7 +20,7 @@ public class ListaIndicacaoController {
 		this.listaIndicacaoService = listaIndicacaoService;
 	}
 	
-	@PostMapping
+	@PostMapping("/create")
 	public ListaIndicacao criarLista(@RequestBody ListaIndicacaoDTO dto) {
 		
 		return listaIndicacaoService.criarLista(dto);

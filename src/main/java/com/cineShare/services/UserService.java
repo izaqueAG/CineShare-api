@@ -26,8 +26,10 @@ public class UserService {
 	
 	public User salvar(User user) {
 
-	    if (userRepository.existsByEmail(user.getEmail())) {
-	        throw new IllegalArgumentException("E-mail já cadastrado");
+	    User usuarioExistente = userRepository.findByEmail(user.getEmail());
+
+	    if (usuarioExistente != null) {
+	        return usuarioExistente;
 	    }
 
 	    return userRepository.save(user);

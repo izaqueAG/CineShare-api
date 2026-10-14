@@ -39,7 +39,6 @@ public class UserController {
 	}
 	
 	@PostMapping("/user")
-	@ResponseStatus(HttpStatus.CREATED)
 	public User salvar(@RequestBody User user) {
 		return userService.salvar(user);
 	}

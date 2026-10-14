@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
@@ -19,6 +20,10 @@ public class ListaIndicacao {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String nome;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 	
 	@ManyToMany
 	@JoinTable(
@@ -27,4 +32,5 @@ public class ListaIndicacao {
 			inverseJoinColumns = @JoinColumn(name = "titulos_id")
 			)
 	private List<Titulo> titulos;
+	
 }
