@@ -62,4 +62,9 @@ public class ListaIndicacaoService {
 
         return listaRepository.save(lista);
     }
+    
+    public List<ListaIndicacao> listAll(){
+    	
+    	return listaRepository.findAll();
+    }
 }
