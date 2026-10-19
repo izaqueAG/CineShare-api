@@ -22,10 +22,10 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	
 	boolean existsByNome(String nome);
 	
-	@Override
-		default Optional<User> findById(Long id) {
-			// TODO Auto-generated method stub
-			return Optional.empty();
-		}
+//	@Override
+//		default Optional<User> findById(Long id) {
+//			// TODO Auto-generated method stub
+//			return Optional.empty();
+//		}
 
 }

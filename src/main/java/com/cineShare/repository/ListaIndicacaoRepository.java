@@ -9,23 +9,24 @@ import com.cineShare.model.ListaIndicacao;
 
 public interface ListaIndicacaoRepository extends JpaRepository<ListaIndicacao, Long>{
 	
-	@Override
-	default List<ListaIndicacao> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	default <S extends ListaIndicacao> S save(S entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	default Optional<ListaIndicacao> findById(Long id) {
-		// TODO Auto-generated method stub
-		
-		return Optional.empty();
-	}
+//	@Override
+//	default List<ListaIndicacao> findAll() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	
+//	@Override
+//	default <S extends ListaIndicacao> S save(S entity) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	
+//	@Override
+//	default Optional<ListaIndicacao> findById(Long id) {
+//		// TODO Auto-generated method stub
+//		
+//		return Optional.empty();
+//	
+//	}
 
 }
