@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.net.http.HttpClient;
@@ -33,7 +35,7 @@ class TituloServiceTest {
         TituloService service = service();
         HttpClient client = mock(HttpClient.class);
         HttpResponse<String> response = response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"1999-03-31\"}]}");
-        when(client.send(any(), any())).thenReturn(response);
+        doReturn(response).when(client).send(any(), any());
         Titulo salvo = titulo("Matrix");
         salvo.setAnoLancamento(LocalDate.of(1999, 3, 31));
         when(tituloRepository.findByNome("Matrix")).thenReturn(List.of());
@@ -54,7 +56,7 @@ class TituloServiceTest {
     void dadoTituloJaPersistido_quandoBuscar_entaoRetornaRegistroExistente() throws Exception {
         TituloService service = service();
         HttpClient client = mock(HttpClient.class);
-        when(client.send(any(), any())).thenReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"1999-03-31\"}]}"));
+        doReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"1999-03-31\"}]}" )).when(client).send(any(), any());
         Titulo existente = titulo("Matrix");
         when(tituloRepository.findByNome("Matrix")).thenReturn(List.of(existente));
 
@@ -71,7 +73,7 @@ class TituloServiceTest {
     void dadoTmdbComStatusNaoSucesso_quandoBuscar_entaoInformaErro() throws Exception {
         TituloService service = service();
         HttpClient client = mock(HttpClient.class);
-        when(client.send(any(), any())).thenReturn(response(401, "{}"));
+        doReturn(response(401, "{}")).when(client).send(any(), any());
 
         try (MockedStatic<HttpClient> httpClient = mockStatic(HttpClient.class)) {
             httpClient.when(HttpClient::newHttpClient).thenReturn(client);
@@ -86,7 +88,7 @@ class TituloServiceTest {
     void dadoTmdbSemResultados_quandoBuscar_entaoInformaTituloNaoEncontrado() throws Exception {
         TituloService service = service();
         HttpClient client = mock(HttpClient.class);
-        when(client.send(any(), any())).thenReturn(response(200, "{\"results\":[]}"));
+        doReturn(response(200, "{\"results\":[]}")).when(client).send(any(), any());
 
         try (MockedStatic<HttpClient> httpClient = mockStatic(HttpClient.class)) {
             httpClient.when(HttpClient::newHttpClient).thenReturn(client);
@@ -117,7 +119,7 @@ class TituloServiceTest {
     void dadoRespostaTmdbSemData_quandoBuscar_entaoPersisteTituloSemData() throws Exception {
         TituloService service = service();
         HttpClient client = mock(HttpClient.class);
-        when(client.send(any(), any())).thenReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"\"}]}"));
+        doReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"\"}]}" )).when(client).send(any(), any());
         when(tituloRepository.findByNome("Matrix")).thenReturn(List.of());
         when(tituloRepository.save(any(Titulo.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -132,7 +134,7 @@ class TituloServiceTest {
     void dadoRespostaTmdbComResultado_quandoBuscarComEspacos_entaoRetornaResultado() throws Exception {
         TituloService service = service();
         HttpClient client = mock(HttpClient.class);
-        when(client.send(any(), any())).thenReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"1999-03-31\"}]}"));
+        doReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"1999-03-31\"}]}" )).when(client).send(any(), any());
         when(tituloRepository.findByNome("Matrix")).thenReturn(List.of());
         when(tituloRepository.save(any(Titulo.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -147,7 +149,7 @@ class TituloServiceTest {
     void dadoTmdbComRespostaNula_quandoBuscar_entaoInformaTituloNaoEncontrado() throws Exception {
         TituloService service = service();
         HttpClient client = mock(HttpClient.class);
-        when(client.send(any(), any())).thenReturn(response(200, "{\"results\":null}"));
+        doReturn(response(200, "{\"results\":null}")).when(client).send(any(), any());
 
         try (MockedStatic<HttpClient> httpClient = mockStatic(HttpClient.class)) {
             httpClient.when(HttpClient::newHttpClient).thenReturn(client);
@@ -162,7 +164,7 @@ class TituloServiceTest {
     void dadoTmdbComTituloSemData_quandoBuscar_entaoDefinePlataformaPadrao() throws Exception {
         TituloService service = service();
         HttpClient client = mock(HttpClient.class);
-        when(client.send(any(), any())).thenReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"\"}]}"));
+        doReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"\"}]}" )).when(client).send(any(), any());
         when(tituloRepository.findByNome("Matrix")).thenReturn(List.of());
         when(tituloRepository.save(any(Titulo.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -177,7 +179,7 @@ class TituloServiceTest {
     void dadoTmdbComRespostaValida_quandoBuscar_entaoConsultaTituloPeloNomeRetornado() throws Exception {
         TituloService service = service();
         HttpClient client = mock(HttpClient.class);
-        when(client.send(any(), any())).thenReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"1999-03-31\"}]}"));
+        doReturn(response(200, "{\"results\":[{\"title\":\"Matrix\",\"release_date\":\"1999-03-31\"}]}" )).when(client).send(any(), any());
         when(tituloRepository.findByNome("Matrix")).thenReturn(List.of());
         when(tituloRepository.save(any(Titulo.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -199,8 +201,8 @@ class TituloServiceTest {
     @SuppressWarnings("unchecked")
     private HttpResponse<String> response(int status, String body) {
         HttpResponse<String> response = mock(HttpResponse.class);
-        when(response.statusCode()).thenReturn(status);
-        when(response.body()).thenReturn(body);
+        lenient().when(response.statusCode()).thenReturn(status);
+        lenient().when(response.body()).thenReturn(body);
         return response;
     }
 
