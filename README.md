@@ -25,3 +25,5 @@ O CineShare é um protótipo que busca permitir aos usuários organizar e compar
 ## Status
 
 Projeto em desenvolvimento.
+
+ajustar !
