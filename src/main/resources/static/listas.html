@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineShare - Listas de Indicação</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+
+        h1, h2 {
+            color: #222;
+        }
+
+        .busca {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #222;
+            color: white;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        #mensagem {
+            margin: 15px 0;
+            color: #555;
+        }
+
+        #resultados {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .lista {
+            background: white;
+            padding: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+
+        .lista:hover {
+            background: #e9e9e9;
+        }
+
+        #detalhes {
+            margin-top: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .erro {
+            color: #b00020;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>CineShare</h1>
+    <h2>Listas de indicação</h2>
+
+    <div class="busca">
+        <input
+            type="text"
+            id="nomeLista"
+            placeholder="Digite o nome da lista"
+        >
+
+        <button onclick="buscarListas()">Buscar</button>
+        <button onclick="mostrarTodas()">Mostrar todas</button>
+    </div>
+
+    <p id="mensagem"></p>
+    <div id="resultados"></div>
+
+    <section id="detalhes">
+        <h2 id="tituloDetalhes"></h2>
+        <p id="proprietario"></p>
+        <h3>Títulos</h3>
+        <ul id="titulos"></ul>
+    </section>
+
+    <script>
+        const API = "/listas";
+
+        async function buscarListas() {
+            const nome = document.getElementById("nomeLista").value.trim();
+
+            if (!nome) {
+                mostrarMensagem("Digite o nome da lista.", true);
+                return;
+            }
+
+            await carregarListas(
+                `${API}?nome=${encodeURIComponent(nome)}`
+            );
+        }
+
+        async function mostrarTodas() {
+            await carregarListas(API);
+        }
+
+        async function carregarListas(url) {
+            const resultados = document.getElementById("resultados");
+            const detalhes = document.getElementById("detalhes");
+
+            resultados.replaceChildren();
+            detalhes.style.display = "none";
+            mostrarMensagem("Carregando...");
+
+            try {
+                const resposta = await fetch(url);
+
+                if (!resposta.ok) {
+                    throw new Error(`Erro HTTP ${resposta.status}`);
+                }
+
+                const listas = await resposta.json();
+
+                if (!Array.isArray(listas) || listas.length === 0) {
+                    mostrarMensagem("Nenhuma lista encontrada.");
+                    return;
+                }
+
+                mostrarMensagem(`${listas.length} lista(s) encontrada(s).`);
+
+                listas.forEach(lista => {
+                    const item = document.createElement("div");
+                    item.className = "lista";
+
+                    const nome = document.createElement("strong");
+                    nome.textContent = lista.nome || "Lista sem nome";
+
+                    const identificador = document.createElement("p");
+                    identificador.textContent = `ID: ${lista.id}`;
+
+                    item.append(nome, identificador);
+                    item.addEventListener("click", () => abrirLista(lista));
+
+                    resultados.appendChild(item);
+                });
+            } catch (erro) {
+                mostrarMensagem(
+                    `Não foi possível carregar as listas: ${erro.message}`,
+                    true
+                );
+            }
+        }
+
+        async function abrirLista(lista) {
+            const detalhes = document.getElementById("detalhes");
+            const titulos = document.getElementById("titulos");
+
+            document.getElementById("tituloDetalhes").textContent =
+                lista.nome || "Lista sem nome";
+
+            document.getElementById("proprietario").textContent =
+                lista.user
+                    ? `Criada por: ${lista.user.nome}`
+                    : "";
+
+            titulos.replaceChildren();
+
+            try {
+                // Usa os títulos já recebidos ou consulta a lista pelo ID.
+                let dados = lista;
+
+                if (!Array.isArray(lista.titulos)) {
+                    const resposta = await fetch(
+                        `${API}/${encodeURIComponent(lista.id)}`
+                    );
+
+                    if (!resposta.ok) {
+                        throw new Error(`Erro HTTP ${resposta.status}`);
+                    }
+
+                    dados = await resposta.json();
+                }
+
+                (dados.titulos || []).forEach(titulo => {
+                    const item = document.createElement("li");
+                    item.textContent =
+                        typeof titulo === "string" ? titulo : titulo.nome;
+                    titulos.appendChild(item);
+                });
+
+                if (!dados.titulos || dados.titulos.length === 0) {
+                    const item = document.createElement("li");
+                    item.textContent = "Nenhum título cadastrado.";
+                    titulos.appendChild(item);
+                }
+
+                detalhes.style.display = "block";
+                detalhes.scrollIntoView({ behavior: "smooth" });
+            } catch (erro) {
+                mostrarMensagem(
+                    `Não foi possível abrir a lista: ${erro.message}`,
+                    true
+                );
+            }
+        }
+
+        function mostrarMensagem(texto, erro = false) {
+            const mensagem = document.getElementById("mensagem");
+            mensagem.textContent = texto;
+            mensagem.className = erro ? "erro" : "";
+        }
+
+        document.getElementById("nomeLista").addEventListener("keydown", evento => {
+            if (evento.key === "Enter") {
+                buscarListas();
+            }
+        });
+
+        // Carrega todas as listas ao abrir a página.
+/*        mostrarTodas();*/
+    </script>
+</body>
+</html>
