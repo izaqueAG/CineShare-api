@@ -95,6 +95,10 @@ public class TituloService {
             Titulo titulo = new Titulo();
 
             titulo.setNome(resultado.getTitle());
+            titulo.setTmdbId(resultado.getId());
+            if (resultado.getPosterPath() != null && !resultado.getPosterPath().isBlank()) {
+                titulo.setCapaUrl("https://image.tmdb.org/t/p/w500" + resultado.getPosterPath());
+            }
 
             if (resultado.getReleaseDate() != null
                     && !resultado.getReleaseDate().isBlank()) {

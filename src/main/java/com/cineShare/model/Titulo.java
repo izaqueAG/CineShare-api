@@ -29,5 +29,11 @@ public class Titulo {
 
     private LocalDate anoLancamento;
 
+    private Long tmdbId;
+
+    private String capaUrl;
+
+    private String diretor;
+
    
 }
