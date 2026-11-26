@@ -54,6 +54,7 @@ Este roteiro parte do [diagnóstico de 23 de novembro de 2026](diagnostico-atual
 - Impedir envios duplicados enquanto houver uma gravação em andamento. Exibir carregamento e erros, descartar respostas de buscas já substituídas e manter a seleção no máximo de três títulos durante buscas simultâneas.
 - Remover as cercas de Markdown do cadastro, declarar `viewport` nas três páginas e compartilhar estilos de formulário e feedback. Usar rótulos, controles operáveis por teclado e anúncio de mensagens dinâmicas.
 - Documentar os pré-requisitos, as variáveis de ambiente, a inicialização do banco e os comandos de execução e teste a partir de um checkout limpo.
+- Aplicar a migração visual descrita em [migração visual](migracao-visual.md), com lâmpadas de navegação, Home com balcão e prateleira, estojo Blu-ray compacto quando fechado e disco circular com capa quando aberto.
 
 **Dependências.** A entrega conjunta com os contratos da etapa 3 mantém as telas sincronizadas com a API. A execução documentada precisa das etapas 1 e 2.
 
